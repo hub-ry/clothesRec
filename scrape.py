@@ -26,13 +26,15 @@ for link in urls:
         #print(products[0]["body_html"])
         #print(products[0]["variants"][0]["price"])
         
-        if link != "https://haruyama365.com/products.json":
-            continue
 
         for p in products:
             
             if not p["images"]:
                 continue
+            if link == "https://haruyama365.com/products.json" and p["vendor"].lower() != "kapital":
+                continue
+
+
             item = {
                 "title": p["title"],
                 "price": p["variants"][0]["price"],
