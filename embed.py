@@ -17,19 +17,19 @@ with open("data/products.json") as f:
 vecs = []
 kept = []
 
-for item in items [:10]:
+for item in items:
     try:
         resp = requests.get(item["image"]) # download the photo bytes
         img = Image.open(io.BytesIO(resp.content)).convert("RGB") # open as image
         inputs = processor(images=img, return_tensors="pt") # processor resize to CLIP format
-        with torch.no_grad():
+        with torch.no_grad(): # not recording opeations to build the gradient
             vec = model.get_image_features(**inputs) # model return 512 numbers
     except Exception as e:
         print("skip", item["title"], e)
         continue
-    vecs.append(vec[0])
+    vecs.append(vec.pooler_output[0])
     kept.append(item)
-
+    #print(type(vec), vec.pooler_output[0].shape)
 
 arr = np.stack([v.numpy() for v in vecs]) 
 # turns all the 512 dim vecotrs in to a 2d array, so you can compare
