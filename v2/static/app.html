@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>clothesRec · Review</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header><h1>clothesRec</h1><p>Browse clothes. Keep what fits your taste.</p><div id="stats" aria-live="polite">Loading counts…</div></header>
+  <main>
+    <p id="error" role="alert" hidden></p>
+    <section aria-label="Catalog">
+      <div class="toolbar"><label>Show <select id="filter"><option value="all">All</option><option value="unrated">Unrated</option><option value="rated">Rated</option><option value="dislike">Dislike</option><option value="like">Like</option><option value="love">Love</option></select></label><span id="catalog-status" aria-live="polite"></span></div>
+      <p class="hint">Click a card to select it. ← dislike · → like · ↑ love · ↓ / J next · K previous. Unrated means unknown, not disliked.</p>
+      <div id="grid" class="grid"></div>
+      <div id="sentinel"><button id="more" type="button">Load 48 more</button></div>
+    </section>
+    <section class="panel" aria-labelledby="summary-title">
+      <h2 id="summary-title">Summarize my taste</h2>
+      <p>Summaries are editable guesses. Your ratings stay the source of truth.</p>
+      <p><strong>Running a summary sends the selected feedback, notes, listing facts, and image data to DeepSeek.</strong> DeepSeek receives images to infer visual preferences. Preview the exact input before you run it. The server downloads the shown images and sends their data, not just their URLs. A run may cost money.</p>
+      <button id="preview" type="button">Preview exact input</button>
+      <button id="run" type="button">Run summary (uses DeepSeek, sends the shown examples + images)</button>
+      <details id="preview-panel"><summary>Exact summary input</summary><pre id="preview-json"></pre></details>
+      <p id="summary-status" role="status"></p>
+      <div id="latest-summary"></div>
+      <details><summary>Past summaries</summary><button id="history" type="button">Refresh past summaries</button><div id="summaries"></div></details>
+    </section>
+    <details class="panel" id="rejections-panel"><summary id="rejection-count">Rejected records</summary><p>Records that couldn't enter the catalog, and why.</p><div id="rejections"></div></details>
+  </main>
+</body>
+</html>
