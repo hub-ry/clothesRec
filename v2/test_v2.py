@@ -162,6 +162,20 @@ class V2Tests(unittest.TestCase):
         self.assertNotIn('base64', json.dumps(request))
         self.assertEqual(request['model'], 'deepseek-flash')
 
+    def test_summary_drops_extra_top_level_keys(self):
+        self.rate_groups([('love', 1), ('like', 1), ('dislike', 1)])
+        result = {'summary': 'Likes simple clothes.', 'loves_and_likes': [],
+                  'dislikes': [], 'non_style_objections': [], 'open_questions': []}
+        payload = {'choices': [{'message': {'content': json.dumps(
+            dict(result, type='json_object'))}}]}
+        with patch.dict(os.environ, {'DEEPSEEK_API_KEY': 'test-key'}), \
+                patch.object(db, 'ROOT', Path(self.temp.name)), \
+                patch.object(summarize, '_download_image', return_value='data:image/png;base64,eA=='), \
+                patch.object(summarize.request, 'urlopen', return_value=io.StringIO(json.dumps(payload))):
+            row = summarize.run(self.conn, 1)
+        self.assertIsNone(row['error'])
+        self.assertEqual(json.loads(row['result_json']), result)
+
     def test_unknown_availability_and_numeric_price(self):
         product = {'id': 99, 'handle': 'unknown', 'title': 'Unknown',
                    'images': [{'src': 'https://example.com/image.jpg'}],

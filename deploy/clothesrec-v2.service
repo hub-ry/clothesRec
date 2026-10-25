@@ -1,0 +1,22 @@
+# Installed as /etc/systemd/system/clothesrec-v2.service on hub.
+# Public at https://clothesrec.ryhub.dev via the existing cloudflared tunnel.
+[Unit]
+Description=clothesRec v2 review grid (behind cloudflared)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ryanhubbart
+WorkingDirectory=/home/ryanhubbart/code/clothesRec-v2
+# Only DEEPSEEK_API_KEY lives here (chmod 600, outside git).
+EnvironmentFile=/home/ryanhubbart/.config/clothesrec/env
+Environment=HOST=127.0.0.1
+Environment=PORT=8090
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 v2/server.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

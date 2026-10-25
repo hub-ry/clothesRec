@@ -217,6 +217,8 @@ def run(conn, person_id):
         result = json.loads(payload['choices'][0]['message']['content'])
         if not isinstance(result, dict) or not isinstance(result.get('summary'), str):
             raise _CallError('The model returned an invalid summary object.')
+        result = {key: value for key, value in result.items()
+                  if key in RESULT_SCHEMA['properties']}
         result_json = _readable(result)
     except Exception as exc:
         failure = _safe_error(exc)
